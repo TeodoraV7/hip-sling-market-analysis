@@ -38,7 +38,3 @@ The end goal is twofold:
 - **Reporting:** Looker Studio
 - **Project management:** Notion
 - **Portfolio hosting:** GitHub
-
----
-
-*This README will be updated as each phase progresses. See the Notion board (linked separately) for detailed task-level tracking.*
