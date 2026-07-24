@@ -2,7 +2,7 @@
 
 ## 📋 Project Description
 
-This project is a data-driven validation of a business concept for a premium hip sling carrier, targeting the EU market through an online-only sales model. The concept is positioned against **Wildride** as the primary competitor benchmark, with a key differentiator in improved shoulder ergonomics.
+This project is a data-driven validation of a business concept for a premium hip sling carrier, targeting the EU market through an online-only sales model.
 
 The project combines two goals in one workflow:
 1. **Entrepreneurial validation** — determining whether this product concept is commercially viable before committing capital, factoring in EU regulatory requirements (EN 13209-2:2015, OEKO-TEX 100, REACH, CE marking) that are mandatory for selling children's products.
