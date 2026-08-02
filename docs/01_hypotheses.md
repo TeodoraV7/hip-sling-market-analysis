@@ -4,7 +4,7 @@
 > record of when each was set.
 >
 > - **Survey opened:** 2026-07-22
-> - **Collection closes:** per stopping rule, [`02_methodology.md`](02_methodology.md) §3
+> - **Collection closes:** per stopping rule, [`02_methodology.md`](02_methodology.md)
 
 ---
 
@@ -149,7 +149,7 @@ the thresholds above may be read:
 
 - **Convenience sample.** Not random. Results describe the sample, not the EU
   population.
-- **Self-selection.** Respondents to a carrier survey are pre-disposed
+- **Self-selection.** Respondents to a carrier survey are predisposed
   favourably.
 - **Social desirability.** Warm contacts under-report negative sentiment.
 - **Stated vs. revealed preference.** The central weakness of survey-based
