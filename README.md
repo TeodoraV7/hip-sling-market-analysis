@@ -20,11 +20,11 @@ The end goal is twofold:
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1. Market Research & Survey Design | Design survey (demographics, lifestyle, carrier usage, prototype test) | 🟡 In Progress |
+| 1. Market Research & Survey Design | Design survey (demographics, lifestyle, carrier usage, prototype test) | 🟢 Done |
 | 2. [Survey Distribution](https://forms.gle/hWkt5NWEuNFu2fj97) | Distribute to target parent audience across the EU | 🟡 In Progress |
 | 3. Data Collection & Pipeline | Set up BigQuery for storage, Google Colab (Python) for analysis |  🟡 In Progress |
-| 4. Data Analysis | Analyze demographics, usage patterns, and price sensitivity | ⚪ Not Started |
-| 5. Landing Page & Pre-Order Test | Build landing page, test real purchase intent via pre-orders | ⚪ Not Started |
+| 4. Data Analysis | Analyze demographics, usage patterns, and price sensitivity | 🟡 In Progress |
+| 5. Landing Page & Pre-Order Test | Build landing page, test real purchase intent via pre-orders | 🟡 In Progress |
 | 6. A/B Testing & Email Campaign | Test messaging/pricing variants, run email campaign | ⚪ Not Started |
 | 7. Financial & Regulatory Modeling | Model costs with/without EU certification (EN 13209-2:2015, OEKO-TEX 100, REACH, CE); evaluate EU-wide grant funding options | ⚪ Not Started |
 | 8. Final Recommendation & Dashboard | Build Looker Studio dashboard; produce final go/no-go business recommendation document | ⚪ Not Started |
