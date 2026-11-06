@@ -140,7 +140,7 @@ reported as a point estimate.
 
 **Location is free text.** Q1 returns country in varied spellings, languages, and
 capitalisations. *Handled:* normalised into `city` and `country` in
-transformation, with the original retained as `location_raw`.
+transformation.
 
 **Parent age bands share boundaries.** Q2 options overlap at 35 and 40, so a
 respondent at a boundary may have selected either. *Handled:* affects demographic
@@ -163,7 +163,7 @@ reported, rather than by changing the questionnaire.
 | Characteristic | Handled by |
 |---|---|
 | Q12 does not gate the satisfaction block | Filter satisfaction denominator to `carrier_use in ('Yes','Sometimes')` |
-| Location is free text | Normalise into `city` and `country`; retain `location_raw` |
+| Location is free text | Normalise into `city` and `country` |
 | WTP band spans the entry price | Set the qualifying threshold at the next band up |
 | WTP is unanchored | Read as a lower bound; state this wherever WTP is reported |
 | Willingness to try is binary | Deflate qualified intent across a range; weight the email opt-in |

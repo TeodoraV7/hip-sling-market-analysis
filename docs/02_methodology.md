@@ -114,9 +114,9 @@ offered.
 
 ```
 Google Forms  →  BigQuery (staging)  →  Colab (transform, clean)
-                                     →  BigQuery (store)
+                                     →  BigQuery (intermediate)
                                      →  Colab (analysis)
-                                     →  BigQuery (aggregated)
+                                     →  BigQuery (marts)
                                      →  Looker Studio
 ```
 
