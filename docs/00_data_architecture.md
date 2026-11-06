@@ -143,9 +143,9 @@ less, as GA4 and email data enter the warehouse.
 - **Only aggregated outputs are published**, and only where they contain no
   personal data.
 - **Personal data is isolated.** Email addresses and any other identifiers are
-  held in separate tables and are not joined into anything published. The
-  transformation keeps only whether an address was left (`provided_email`),
-  never the address itself.
+  held in separate tables and are not joined into anything published. Email
+  addresses stay in `staging`: the transformation excludes them, so they never
+  reach `intermediate` or `marts`.
 - **Purpose limitation.** Email addresses were collected for launch
   notification, with that purpose stated at collection. They are not used for
   anything else.

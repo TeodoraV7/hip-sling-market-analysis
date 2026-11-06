@@ -102,7 +102,7 @@ No p-values are reported. The decision rule is the interval.
 | H3 | Rank of parent and child comfort among the 11 importance attributes | Qualified | Both top 5 |
 | H4 | % who use or recognise a hip sling carrier | Qualified | > 40% |
 | H5 | % willing to try the prototype | Qualified, not current hip sling users | > 50% |
-| H6 | % leaving an email address for launch notification | Qualified | > 30% |
+| H6 | % opting in to launch notification | Qualified | > 30% |
 | H7 | Median WTP band vs. category entry price | Qualified, WTP answered | Median ≥ entry band |
 
 **H3 is descriptive.** Ranking eleven related attributes does not support a clean
@@ -113,10 +113,6 @@ reported as unstable rather than as a pass.
 **H5 excludes current hip sling users.** Q20 is asked only on the non-user branch,
 so current users never answered it. They are left out of H5 (§8) rather than
 counted as unwilling.
-
-**H6 counts an email address, not a "Yes".** Leaving an address is the only answer
-that costs the respondent something (see the note on H6 in
-[`01_hypotheses.md`](01_hypotheses.md)), so opt-in means an address was left at Q26.
 
 **H7 uses bands, not numbers.** Willingness to pay was collected in price bands.
 Bands are not converted to midpoints — that would invent precision the survey did
@@ -131,8 +127,8 @@ at list price.
 
 QIR is defined in [`01_hypotheses.md`](01_hypotheses.md): the share of all
 respondents who simultaneously pass the screener, are willing to try (or already
-use a hip sling), fall in the qualifying WTP band or above, and leave an email
-address for launch notification.
+use a hip sling), fall in the qualifying WTP band or above, and opt in to launch
+notification.
 
 Reported as:
 
@@ -215,9 +211,8 @@ Free-text answers are grouped into themes with LLM assistance.
 5. Final themes are reported with counts, and with the agreement level stated.
 
 Responses that cannot be coded are reported as a count, not dropped silently. No
-personal data reaches the model — `email_address` is excluded at the SQL layer,
-where only the boolean `provided_email` is derived from it, as described in
-[`00_data_architecture.md`](00_data_architecture.md).
+personal data reaches the model — `email_address` is excluded at the SQL layer, as
+described in [`00_data_architecture.md`](00_data_architecture.md).
 
 ---
 
