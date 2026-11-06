@@ -89,7 +89,7 @@ ever having been decided.
 
 **What the Spanish sub-minimum does and does not support.** At n ≈ 30 the margin
 of error on a proportion is roughly ±18pp. Spanish results are therefore reported
-as **directional only**, and the Spain–Serbia comparison in [`01_hypotheses.md`](`01_hypotheses.md) §4
+as **directional only**, and the Spain–Serbia comparison in [`01_hypotheses.md`](01_hypotheses.md) §4
 is **not evaluable** at this sample size. If the sub-minimum is not met, that is
 recorded as an unmet quota, not reported as a finding.
 

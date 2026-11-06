@@ -2,7 +2,7 @@
 
 **Status:** Pre-registered. Committed before the results were opened.
 **Date committed:** 2026-09-08
-**Survey closed:** `<CLOSE_DATE>`
+**Survey closes:** 2026-11-15
 
 Related: [`01_hypotheses.md`](01_hypotheses.md) · [`02_methodology.md`](02_methodology.md) · [`04_findings.md`](04_findings.md) · [`05_competitive_pricing.md`](05_competitive_pricing.md)
 
