@@ -1,6 +1,7 @@
 # Findings
 
 **Status: not yet written.**
+**Survey closes:** 2026-11-15
 
 Findings are written after collection closes under the stopping rule in
 [`02_methodology.md`](02_methodology.md) and the hypotheses in [`01_hypotheses.md`](01_hypotheses.md) have been

@@ -85,7 +85,7 @@ notebook (`WRITE_TRUNCATE`); they are never edited by hand.
 | `qir_summary` | Qualified Intent Rate with interval, kill threshold and kill flag |
 | `qir_attrition` | Respondents remaining after each of the four QIR conditions |
 | `qir_deflator_sensitivity` | QIR at each deflator factor |
-| `country_comparison` | Spain vs. Serbia on the secondary comparisons |
+| `country_comparison` | Spain vs. Serbia on the secondary comparisons, with an interval around each difference |
 
 Definitions and decision rules behind each table are in
 [`06_analysis_plan.md`](06_analysis_plan.md).
@@ -143,7 +143,9 @@ less, as GA4 and email data enter the warehouse.
 - **Only aggregated outputs are published**, and only where they contain no
   personal data.
 - **Personal data is isolated.** Email addresses and any other identifiers are
-  held in separate tables and are not joined into anything published.
+  held in separate tables and are not joined into anything published. The
+  transformation keeps only whether an address was left (`provided_email`),
+  never the address itself.
 - **Purpose limitation.** Email addresses were collected for launch
   notification, with that purpose stated at collection. They are not used for
   anything else.
