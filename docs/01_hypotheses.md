@@ -34,7 +34,7 @@ must be established against it, not against Wildride alone.
 | H4 | The category is used and understood | % who use or recognise a hip sling carrier | > 40% | _pending_ |
 | H5 | The concept attracts interest | % willing to try the prototype | > 50% | _pending_ |
 | H6 | Interest survives a small cost | % opting in to launch notification | > 30% | _pending_ |
-| H7 | Price headroom exists at the premium end | Median stated WTP vs. category entry price (`05_competitive_pricing.md`)(05_competitive_pricing.md) | Median ≥ entry price | _pending_ |
+| H7 | Price headroom exists at the premium end | Median stated WTP vs. category entry price ([`05_competitive_pricing.md`](05_competitive_pricing.md)) | Median ≥ entry price | _pending_ |
 
 **Note on H1 and H2.** The denominator is restricted to respondents reporting
 current carrier use. Need is measured as *dissatisfaction*, not as *stated

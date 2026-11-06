@@ -44,10 +44,10 @@ against subsequent email engagement, for example.
 ## 3. Pattern
 
 ```
-source  →  staging  →  clean  →  aggregated  →  Looker Studio
-              ▲          ▲           ▲
-            raw,      Colab       Colab
-          unmodified  transform   analysis
+source  →  staging  →  intermediate  →  marts  →  Looker Studio
+              ▲             ▲             ▲
+            raw,          Colab         Colab
+          unmodified    transform     analysis
 ```
 
 **ELT, not ETL.** Raw records land in staging unmodified. All cleaning happens
@@ -63,12 +63,32 @@ re-collection.
 | Layer | Contents | Written by |
 |---|---|---|
 | `staging` | Raw records as received. Never edited in place. | Ingestion |
-| `clean` | Typed, renamed, deduplicated, normalised. One row per record. | Transform notebook |
-| `aggregated` | Metric tables shaped for reporting. No personal data. | Analysis notebook |
+| `intermediate` | Typed, renamed, deduplicated, normalised. One row per record. | Transform notebook |
+| `marts` | Metric tables shaped for reporting. No personal data. | Analysis notebook |
 
-Looker Studio connects to `aggregated` only. Dashboards do not query raw or clean
-tables, so a dashboard cannot expose a field that was never meant to be
-published.
+Looker Studio connects to `marts` only. Dashboards do not query `staging` or
+`intermediate` tables, so a dashboard cannot expose a field that was never meant
+to be published.
+
+**Marts**
+
+`marts` holds the results of the analysis, one table per result, so that each
+reporting surface reads a finished number and the dashboard performs no
+calculation of its own. Tables are rebuilt in full on every run of the analysis
+notebook (`WRITE_TRUNCATE`); they are never edited by hand.
+
+| Table | Contents |
+|---|---|
+| `hypothesis_results` | H1, H2, H4–H6: `k`, `n`, percentage, 95% interval, threshold, verdict |
+| `h3_importance_ranking` | Mean importance, interval and rank for all eleven attributes; top-5 and stability flags |
+| `h7_wtp_distribution` | Count per WTP band, median band, entry band, verdict |
+| `qir_summary` | Qualified Intent Rate with interval, kill threshold and kill flag |
+| `qir_attrition` | Respondents remaining after each of the four QIR conditions |
+| `qir_deflator_sensitivity` | QIR at each deflator factor |
+| `country_comparison` | Spain vs. Serbia on the secondary comparisons, with an interval around each difference |
+
+Definitions and decision rules behind each table are in
+[`06_analysis_plan.md`](06_analysis_plan.md).
 
 ---
 
@@ -78,8 +98,11 @@ Two notebooks per source, separated by concern rather than by data volume:
 
 | Notebook | Reads | Writes | Responsibility |
 |---|---|---|---|
-| `NN_transform.ipynb` | `staging` | `clean` | Typing, renaming, deduplication, normalisation |
-| `NN_analysis.ipynb` | `clean` | `aggregated` | Metrics, aggregation, hypothesis evaluation |
+| `{source}_transformation.ipynb` | `staging` | `intermediate` | Typing, renaming, deduplication, normalisation |
+| `{source}_analysis.ipynb` | `intermediate` | `marts` | Metrics, aggregation, hypothesis evaluation |
+
+For the survey: [`survey_transformation.ipynb`](../notebooks/survey_transformation.ipynb)
+and [`survey_analysis.ipynb`](../notebooks/survey_analysis.ipynb).
 
 The separation means cleaning logic can be re-run without re-running analysis,
 and analysis can be revised without touching cleaning. It also keeps the
@@ -92,11 +115,13 @@ committing where they would otherwise embed row-level data in the repository.
 
 ## 5. Conventions
 
-**Datasets** are named by layer: `staging`, `clean`, `aggregated`.
+**Datasets** are named by layer: `staging`, `intermediate`, `marts`.
 
-**Tables** are named `{source}_{grain}` — for example `survey_responses`,
-`ga4_sessions`, `email_events`. Grain is stated in the name so that a join
-against the wrong level is visible before it is executed.
+**Tables** in `staging` and `intermediate` carry the layer prefix followed by
+`{source}_{grain}` — for example `stg_survey_responses`,
+`int_clean_survey_responses`. Grain is stated in the name so that a join
+against the wrong level is visible before it is executed. Tables in `marts` are
+named after the result they hold — `hypothesis_results`, `qir_attrition`.
 
 **Columns** are `snake_case`. Booleans read as predicates (`is_`, `has_`).
 Timestamps end in `_at`. Free-text fields carry a `_raw` suffix where a
@@ -118,7 +143,9 @@ less, as GA4 and email data enter the warehouse.
 - **Only aggregated outputs are published**, and only where they contain no
   personal data.
 - **Personal data is isolated.** Email addresses and any other identifiers are
-  held in separate tables and are not joined into anything published.
+  held in separate tables and are not joined into anything published. Email
+  addresses stay in `staging`: the transformation excludes them, so they never
+  reach `intermediate` or `marts`.
 - **Purpose limitation.** Email addresses were collected for launch
   notification, with that purpose stated at collection. They are not used for
   anything else.
@@ -133,7 +160,7 @@ less, as GA4 and email data enter the warehouse.
 
 | Phase | Document |
 |---|---|
-| 1 — Survey | [`01_hypotheses.md`](01_hypotheses.md), [`02_methodology.md`](02_methodology.md), [`03_survey_instrument.md`](03_survey_instrument.md), [`04_findings.md`](04_findings.md) |
+| 1 — Survey | [`01_hypotheses.md`](01_hypotheses.md), [`02_methodology.md`](02_methodology.md), [`03_survey_instrument.md`](03_survey_instrument.md), [`04_findings.md`](04_findings.md), [`06_analysis_plan.md`](06_analysis_plan.md) |
 | Reference | [`05_competitive_pricing.md`](05_competitive_pricing.md) |
 | 2 — Website analytics | planned |
 | 3 — A/B test | planned |

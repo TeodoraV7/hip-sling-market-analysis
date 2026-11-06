@@ -21,7 +21,7 @@ The end goal is twofold:
 | Phase | Description | Status |
 |-------|-------------|--------|
 | 1. Market Research & Survey Design | Design survey (demographics, lifestyle, carrier usage, prototype test) | 🟢 Done |
-| 2. [Survey Distribution](https://forms.gle/hWkt5NWEuNFu2fj97) | Distribute to target parent audience across the EU | 🟡 In Progress |
+| 2. [Survey Distribution](https://forms.gle/hWkt5NWEuNFu2fj97) | Distribute to target parent audience across the EU; collection closes 2026-11-15 | 🟡 In Progress |
 | 3. Data Collection & Pipeline | Set up BigQuery for storage, Google Colab (Python) for analysis |  🟡 In Progress |
 | 4. Data Analysis | Analyze demographics, usage patterns, and price sensitivity | 🟡 In Progress |
 | 5. Landing Page & Pre-Order Test | Build landing page, test real purchase intent via pre-orders | 🟡 In Progress |
@@ -38,3 +38,17 @@ The end goal is twofold:
 - **Reporting:** Looker Studio
 - **Project management:** Notion
 - **Portfolio hosting:** GitHub
+
+## 📁 Repository Structure
+
+| Path | Contents |
+|------|----------|
+| [`docs/00_data_architecture.md`](docs/00_data_architecture.md) | Data stack, BigQuery layers (`staging` → `intermediate` → `marts`), conventions, privacy |
+| [`docs/01_hypotheses.md`](docs/01_hypotheses.md) | Pre-registered hypotheses, QIR, kill criteria |
+| [`docs/02_methodology.md`](docs/02_methodology.md) | Sampling, stopping rule, quota, data pipeline |
+| [`docs/03_survey_instrument.md`](docs/03_survey_instrument.md) | Questionnaire as administered |
+| [`docs/04_findings.md`](docs/04_findings.md) | Findings (written after collection closes) |
+| [`docs/05_competitive_pricing.md`](docs/05_competitive_pricing.md) | Competitor prices and category entry price |
+| [`docs/06_analysis_plan.md`](docs/06_analysis_plan.md) | Pre-registered analysis plan |
+| [`notebooks/survey_transformation.ipynb`](notebooks/survey_transformation.ipynb) | Cleans raw survey data: `staging` → `intermediate` |
+| [`notebooks/survey_analysis.ipynb`](notebooks/survey_analysis.ipynb) | Hypothesis tests and QIR: `intermediate` → `marts` |

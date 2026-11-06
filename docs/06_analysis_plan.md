@@ -2,7 +2,7 @@
 
 **Status:** Pre-registered. Committed before the results were opened.
 **Date committed:** 2026-09-08
-**Survey closed:** `<CLOSE_DATE>`
+**Survey closes:** 2026-11-15
 
 Related: [`01_hypotheses.md`](01_hypotheses.md) · [`02_methodology.md`](02_methodology.md) · [`04_findings.md`](04_findings.md) · [`05_competitive_pricing.md`](05_competitive_pricing.md)
 
@@ -24,45 +24,45 @@ such in [`04_findings.md`](04_findings.md).
 
 | Population | Definition | Used for |
 |---|---|---|
-| All respondents | Every submission passing the screener | QIR |
+| All respondents | Every submission; the screener is QIR condition 1, applied in the numerator | QIR |
 | Qualified | Has a child aged 1–4 | Most hypotheses |
 | Current carrier users | Answered `Yes` or `Sometimes` to carrier use | H1, H2 |
 
 Every reported number states its denominator. Denominators are not switched
 between hypotheses without saying so.
 
-Screener failures are excluded from analysis and reported only as a count.
+Screener failures are excluded from every hypothesis. They stay in the QIR
+denominator, where the screener is condition 1, and their effect is visible in the
+QIR attrition table (§6).
 
 ---
 
 ## 3. Waves
 
-| Wave | Composition | Status |
-|---|---|---|
-| Wave 1 | Serbia-dominant; partially inspected during collection | Exploratory |
-| Wave 2 | Spain-focused | **Confirmatory** |
-| Pooled | Both | Descriptive only |
+| Wave | Composition |
+|---|---|
+| Wave 1 | Serbia-dominant; partially inspected during collection |
+| Wave 2 | Spain-focused |
 
-Wave 1 was seen before this plan was written, so it cannot test anything — the
-thresholds could have been chosen with knowledge of the data. It is reported for
-context.
+Threshold decisions are made on the **full sample**, both waves pooled. No single
+country decides the outcome: the go / no-go recommendation rests on the pooled
+results against the thresholds in §5 and the QIR kill criterion in §6.
 
-Threshold decisions are made on Wave 2.
+Wave 1 was partially inspected before this plan was written. Its responses stay
+in the decision sample, and this is disclosed as a limitation in
+[`04_findings.md`](04_findings.md).
 
 ### If the Spain sub-minimum is not met
 
 The sub-minimum for Spain is set in [`02_methodology.md`](02_methodology.md).
-If the achieved Spain sample falls below it, the following applies, and the
-threshold itself is **not** revised downward to fit the sample:
+It is a collection rule, not a decision rule. If the achieved Spain sample falls
+below it, the sub-minimum itself is **not** revised downward to fit the sample,
+and:
 
-- The Spain confirmatory test is reported as **underpowered** — neither a pass nor
-  a fail. An underpowered result is not evidence that a threshold was cleared.
-- **Wave 2 is not redefined to a broader geography** to reach the count. Changing
-  the definition of the confirmatory market after seeing where responses came from
-  would make the pre-registration meaningless.
-- The **QIR kill criterion still applies** on the full respondent base. Its
-  denominator is all respondents, not one country, so the survey retains its
-  ability to kill even when it has lost its ability to confirm.
+- Spanish subgroup results are reported as **underpowered** — directional only.
+- The Spain vs. Serbia comparison (§7) is reported as not evaluable.
+- The hypotheses in §5 and the QIR kill criterion are unaffected; they are
+  evaluated on the full sample.
 - The shortfall, and the achieved N, are recorded in the Deviations section of
   [`04_findings.md`](04_findings.md).
 
@@ -101,7 +101,7 @@ No p-values are reported. The decision rule is the interval.
 | H2 | % rating child comfort ≤ 3 | Current carrier users | > 30% |
 | H3 | Rank of parent and child comfort among the 11 importance attributes | Qualified | Both top 5 |
 | H4 | % who use or recognise a hip sling carrier | Qualified | > 40% |
-| H5 | % willing to try the prototype | Qualified | > 50% |
+| H5 | % willing to try the prototype | Qualified, not current hip sling users | > 50% |
 | H6 | % opting in to launch notification | Qualified | > 30% |
 | H7 | Median WTP band vs. category entry price | Qualified, WTP answered | Median ≥ entry band |
 
@@ -110,9 +110,14 @@ test at this sample size. The mean importance score and the rank order are
 reported; if comfort sits close to several competing attributes, the rank is
 reported as unstable rather than as a pass.
 
+**H5 excludes current hip sling users.** Q20 is asked only on the non-user branch,
+so current users never answered it. They are left out of H5 (§8) rather than
+counted as unwilling.
+
 **H7 uses bands, not numbers.** Willingness to pay was collected in price bands.
 Bands are not converted to midpoints — that would invent precision the survey did
-not collect. The median band is reported alongside the full distribution. The
+not collect. The median band is reported alongside the full distribution; with an
+even `n`, the lower of the two middle bands is taken. The
 category entry price comes from [`05_competitive_pricing.md`](05_competitive_pricing.md),
 at list price.
 
@@ -122,12 +127,14 @@ at list price.
 
 QIR is defined in [`01_hypotheses.md`](01_hypotheses.md): the share of all
 respondents who simultaneously pass the screener, are willing to try (or already
-use a hip sling), fall in the qualifying WTP band, and opt in to launch
+use a hip sling), fall in the qualifying WTP band or above, and opt in to launch
 notification.
 
 Reported as:
 
-- the percentage, with its 95% interval, against the pre-registered kill threshold
+- the percentage, with its 95% interval, against the pre-registered kill threshold.
+  The kill fires on the percentage itself (QIR < 10%, as in
+  [`01_hypotheses.md`](01_hypotheses.md) §4); the interval is reported beside it
 - **deflator sensitivity** at `sample_factor ∈ {0.3, 0.5, 0.7}` — as a range, never
   as one adjusted number
 - an **attrition table** showing how many respondents drop out at each of the four
@@ -145,8 +152,8 @@ One kill criterion is a sharp split between the two markets. For QIR, WTP band a
 opt-in rate, the plan reports each country's percentage, the difference between
 them, and the interval around that difference.
 
-These comparisons are **secondary**. Serbia sits mostly in the exploratory wave and
-the two groups are unequal in size. A small difference is reported as *not enough
+These comparisons are **secondary** and do not decide the outcome. The two groups
+are unequal in size. A small difference is reported as *not enough
 evidence of a split* — not as evidence that the markets are the same.
 
 Where a country sample is too small to support a comparison, the comparison is
@@ -162,7 +169,7 @@ with `n` stated.
 
 | Case | Handling |
 |---|---|
-| Screener missing or failed | Excluded everywhere; counted in the response flow |
+| Screener missing or failed | Excluded from every hypothesis; kept in the QIR denominator and shown in the attrition table |
 | No answer on a hypothesis variable | Excluded from that hypothesis only |
 | `Don't know` on WTP | Excluded from H7; **counted as non-qualifying in QIR** |
 | `Don't know` on an attitude question | Kept as its own category; not counted in the numerator |
