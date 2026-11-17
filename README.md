@@ -21,7 +21,7 @@ The end goal is twofold:
 | Phase | Description | Status |
 |-------|-------------|--------|
 | 1. Market Research & Survey Design | Design survey (demographics, lifestyle, carrier usage, prototype test) | 🟢 Done |
-| 2. [Survey Distribution](https://forms.gle/hWkt5NWEuNFu2fj97) | Distribute to target parent audience across the EU; collection closes 2026-11-15 | 🟡 In Progress |
+| 2. [Survey Distribution](https://forms.gle/hWkt5NWEuNFu2fj97) | Distribute to target parent audience across the EU; collection closes 2026-11-15 | 🟢 Done |
 | 3. Data Collection & Pipeline | Set up BigQuery for storage, Google Colab (Python) for analysis |  🟡 In Progress |
 | 4. Data Analysis | Analyze demographics, usage patterns, and price sensitivity | 🟡 In Progress |
 | 5. Landing Page & Pre-Order Test | Build landing page, test real purchase intent via pre-orders | 🟡 In Progress |
