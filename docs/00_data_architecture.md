@@ -139,7 +139,10 @@ what the analysis is accountable to.
 These rules apply to every source, not only to the survey. They matter more, not
 less, as GA4 and email data enter the warehouse.
 
-- **Raw records are never committed.** `data/raw/` is git-ignored.
+- **Raw records with personal data are never committed.** Survey, GA4 and email
+  exports stay out of the repository. The exception is public, non-personal
+  data: the competitor benchmark CSV (product pages and public reviews only) is
+  committed in `data/raw/` so the benchmark can be reproduced from source.
 - **Only aggregated outputs are published**, and only where they contain no
   personal data.
 - **Personal data is isolated.** Email addresses and any other identifiers are
