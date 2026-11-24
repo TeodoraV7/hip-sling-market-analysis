@@ -75,7 +75,7 @@ typed AS (
     review_source,
     CASE WHEN STARTS_WITH(review_source, 'brand_site') THEN 'brand_site'
          WHEN review_source IS NOT NULL               THEN 'retailer' END AS source_type,
-    REGEXP_EXTRACT(review_source, r'_(us|es|uk|eu)$')                AS source_market,
+    REGEXP_EXTRACT(review_source, r'_([a-z]{2})$')                   AS source_market,
     collected_at,
 
     -- ---------- price ----------
