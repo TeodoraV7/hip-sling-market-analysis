@@ -1,0 +1,4 @@
+# Raw data: only public, non-personal files are committed.
+# See docs/00_data_architecture.md, section 6 (Privacy).
+data/raw/*
+!data/raw/competitor_benchmark_*.csv
