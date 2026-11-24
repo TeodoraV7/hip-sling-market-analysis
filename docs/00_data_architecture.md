@@ -73,7 +73,7 @@ re-collection.
 | Source | `staging` | `intermediate` | `marts` |
 |---|---|---|---|
 | Survey | `stg_survey_responses` | `int_clean_survey_responses` ([notebook](../notebooks/survey_transformation.ipynb)) | result tables below ([notebook](../notebooks/survey_analysis.ipynb)) |
-| Competitor benchmark | `stg_benchmark_competitors` (from `data/raw/competitor_benchmark_2026-11-18.csv`) | `int_competitor_benchmark` view ([SQL](../sql/intermediate/int_competitor_benchmark.sql)) | planned (`sql/marts/`) |
+| Competitor benchmark | `stg_benchmark_competitors` (from `data/raw/competitor_benchmark_2026-11-18.csv`) | `int_competitor_benchmark` view ([SQL](../sql/intermediate/int_competitor_benchmark.sql)) | `competitor_product_benchmark` view ([SQL](../sql/marts/competitor_product_benchmark.sql)) |
 
 Looker Studio connects to `marts` only. Dashboards do not query `staging` or
 `intermediate` tables, so a dashboard cannot expose a field that was never meant
