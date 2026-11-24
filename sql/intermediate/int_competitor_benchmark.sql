@@ -88,7 +88,7 @@ typed AS (
                           WHEN 'USD' THEN NUMERIC '0.911743'   -- 1 / 1.0968
                           WHEN 'GBP' THEN NUMERIC '1.200624'   -- 1 / 0.8329
                         END, 2)                                  AS price_eur,
-    CASE price_is_promo WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS price_is_promo,
+    CASE price_is_promo WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS is_promo_price,
 
     -- ---------- child spec ----------
     weight_spec,
@@ -105,15 +105,15 @@ typed AS (
         THEN SAFE_CAST(REGEXP_EXTRACT(weight_spec, r'max (\d+(?:\.\d+)?) kg') AS FLOAT64)
     END                                                              AS weight_max_kg,
     age_spec,
-    -- All numeric age specs in this pull start with months ("6-48 months", "9 months-4 years", "18+ months")
-    SAFE_CAST(REGEXP_EXTRACT(age_spec, r'^(\d+)') AS INT64)          AS age_min_months,
-    CASE
-      WHEN REGEXP_CONTAINS(age_spec, r'-\s*\d+ years')
-        THEN 12 * SAFE_CAST(REGEXP_EXTRACT(age_spec, r'-\s*(\d+) years') AS INT64)
-      WHEN REGEXP_CONTAINS(age_spec, r'^\d+-\d+ months')
-        THEN SAFE_CAST(REGEXP_EXTRACT(age_spec, r'^\d+-(\d+) months') AS INT64)
-    END                                                              AS age_max_months,
-    REGEXP_CONTAINS(age_spec, r'\bsit(?:s|ting)?\b')                 AS requires_independent_sitting,
+    -- Each number takes the first unit after it, so "1-4 years" -> 12-48,
+    -- "6 months-4 years" -> 6-48, "18+ months" -> 18. No unit -> NULL.
+    SAFE_CAST(REGEXP_EXTRACT(age_spec, r'^(\d+)') AS INT64)
+      * CASE REGEXP_EXTRACT(age_spec, r'^\d+[^a-z]*(month|year)')
+          WHEN 'year' THEN 12 WHEN 'month' THEN 1 END                AS age_min_months,
+    SAFE_CAST(REGEXP_EXTRACT(age_spec, r'-\s*(\d+)\s*(?:month|year)') AS INT64)
+      * CASE REGEXP_EXTRACT(age_spec, r'-\s*\d+\s*(month|year)')
+          WHEN 'year' THEN 12 WHEN 'month' THEN 1 END                AS age_max_months,
+    REGEXP_CONTAINS(age_spec, r'\bsit(?:s|ting)?\b')                 AS is_independent_sitting_required,
 
     -- ---------- reviews ----------
     review_count,
@@ -131,7 +131,7 @@ typed AS (
     best_rated_accessory_rating,
 
     -- ---------- ergonomics / safety ----------
-    CASE ergonomic_claim WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS ergonomic_claim,
+    CASE ergonomic_claim WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS has_ergonomic_claim,
     ergonomic_certification,
     safety_page_url,
     safety_standards_listed,
@@ -139,9 +139,9 @@ typed AS (
     test_report_public                                               AS test_report_public_status,
 
     -- ---------- shipping ('n/a' = retailer listing, 'unknown' = not checked -> NULL) ----------
-    CASE ships_to_spain  WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS ships_to_spain,
-    CASE ships_to_eu     WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS ships_to_eu,
-    CASE ships_to_serbia WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS ships_to_serbia,
+    CASE ships_to_spain  WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS is_shipping_to_spain,
+    CASE ships_to_eu     WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS is_shipping_to_eu,
+    CASE ships_to_serbia WHEN 'yes' THEN TRUE WHEN 'no' THEN FALSE END AS is_shipping_to_serbia,
     shipping_notes,
     notes
   FROM src
@@ -159,13 +159,13 @@ SELECT
   END                                                                AS age_spec_months,
 
   -- review quality flags (NULL when the source field is empty)
-  REGEXP_CONTAINS(t.theme_method, r'platform_ai_summary')            AS themes_from_ai_summary,
+  REGEXP_CONTAINS(t.theme_method, r'platform_ai_summary')            AS has_ai_summary_themes,
   -- Retailer listings that re-publish brand-site reviews: exclude from rating
   -- aggregation to avoid double counting (Ergobaby on Target in this pull).
   REGEXP_CONTAINS(LOWER(t.notes), r'syndicated')                     AS is_syndicated_reviews,
 
   -- differentiator check: do complaints touch shoulder / strap / neck?
-  REGEXP_CONTAINS(LOWER(t.top_negative_themes), r'shoulder|strap|neck') AS neg_theme_shoulder_strap
+  REGEXP_CONTAINS(LOWER(t.top_negative_themes), r'shoulder|strap|neck') AS has_neg_theme_shoulder_strap
 
 FROM typed AS t
 ;
