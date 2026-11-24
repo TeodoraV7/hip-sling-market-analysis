@@ -18,8 +18,8 @@
 CREATE OR REPLACE VIEW `nomad-503212.intermediate.int_competitor_benchmark` AS
 
 WITH src AS (
-  -- Normalise everything to trimmed strings first, so the view works whether
-  -- the manual load used autodetect or an all-STRING schema.
+  -- Normalise everything to trimmed strings first; yes/no flags are mapped
+  -- to BOOL explicitly in `typed`.
   SELECT
     NULLIF(TRIM(CAST(brand AS STRING)), '')                         AS brand_raw,
     NULLIF(TRIM(CAST(product_name AS STRING)), '')                  AS product_name,
