@@ -113,7 +113,7 @@ typed AS (
       WHEN REGEXP_CONTAINS(age_spec, r'^\d+-\d+ months')
         THEN SAFE_CAST(REGEXP_EXTRACT(age_spec, r'^\d+-(\d+) months') AS INT64)
     END                                                              AS age_max_months,
-    REGEXP_CONTAINS(age_spec, r'sit')                                AS requires_independent_sitting,
+    REGEXP_CONTAINS(age_spec, r'\bsit(?:s|ting)?\b')                 AS requires_independent_sitting,
 
     -- ---------- reviews ----------
     review_count,
