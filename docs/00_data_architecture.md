@@ -17,6 +17,7 @@ redesigning the pipeline around it.
 | Collection | Google Forms, GA4 | Native BigQuery paths; no custom ingestion to maintain |
 | Storage | BigQuery | Single warehouse for every source, so phases can be joined |
 | Transformation | Google Colab (Python) | Notebooks are version-controlled and reviewable |
+| Transformation (SQL) | BigQuery views (`sql/`) | For one-off sources that need only SQL; the view definitions are committed |
 | Visualisation | Looker Studio | Connects natively to BigQuery |
 | Version control | GitHub | Public repository; the analysis is itself a deliverable |
 
@@ -34,6 +35,7 @@ service, no paid connectors.
 | Website analytics (GA4) | Native BigQuery export | 2 | planned |
 | A/B test | GA4 events | 3 | planned |
 | Email campaign (Brevo) | Export or API | 4 | planned |
+| Competitor benchmark | Manual CSV (`data/raw/`) → BigQuery, one-time load | Reference | live |
 
 Sources are added to the same warehouse rather than analysed in isolation, so
 that later phases can be linked to earlier ones — survey respondents who opted in
@@ -63,8 +65,15 @@ re-collection.
 | Layer | Contents | Written by |
 |---|---|---|
 | `staging` | Raw records as received. Never edited in place. | Ingestion |
-| `intermediate` | Typed, renamed, deduplicated, normalised. One row per record. | Transform notebook |
-| `marts` | Metric tables shaped for reporting. No personal data. | Analysis notebook |
+| `intermediate` | Typed, renamed, deduplicated, normalised. One row per record. | Transform notebook or SQL view |
+| `marts` | Metric tables shaped for reporting. No personal data. | Analysis notebook or SQL view |
+
+**Lineage in BigQuery** (project `nomad-503212`)
+
+| Source | `staging` | `intermediate` | `marts` |
+|---|---|---|---|
+| Survey | `stg_survey_responses` | `int_clean_survey_responses` ([notebook](../notebooks/survey_transformation.ipynb)) | result tables below ([notebook](../notebooks/survey_analysis.ipynb)) |
+| Competitor benchmark | `stg_benchmark_competitors` (from `data/raw/competitor_benchmark_2026-11-18.csv`) | `int_competitor_benchmark` view ([SQL](../sql/intermediate/int_competitor_benchmark.sql)) | planned (`sql/marts/`) |
 
 Looker Studio connects to `marts` only. Dashboards do not query `staging` or
 `intermediate` tables, so a dashboard cannot expose a field that was never meant
@@ -92,7 +101,7 @@ Definitions and decision rules behind each table are in
 
 ---
 
-## 4. Notebooks
+## 4. Notebooks and SQL
 
 Two notebooks per source, separated by concern rather than by data volume:
 
@@ -111,6 +120,12 @@ diff on any change readable.
 Notebooks live in `notebooks/` and are committed. Outputs are cleared before
 committing where they would otherwise embed row-level data in the repository.
 
+**SQL views.** A one-time source that needs no Python, such as the competitor
+benchmark, is transformed with BigQuery views instead of notebooks. Each view is
+one file named after the view, in `sql/intermediate/` or `sql/marts/`, and the
+file is the source of truth: the view is re-created from it, never edited in the
+console.
+
 ---
 
 ## 5. Conventions
@@ -118,14 +133,16 @@ committing where they would otherwise embed row-level data in the repository.
 **Datasets** are named by layer: `staging`, `intermediate`, `marts`.
 
 **Tables** in `staging` and `intermediate` carry the layer prefix followed by
-`{source}_{grain}` — for example `stg_survey_responses`,
-`int_clean_survey_responses`. Grain is stated in the name so that a join
-against the wrong level is visible before it is executed. Tables in `marts` are
-named after the result they hold — `hypothesis_results`, `qir_attrition`.
+the source — for example `stg_survey_responses`, `int_clean_survey_responses`,
+`int_competitor_benchmark`. The grain is added to the name only when a source
+has tables at more than one grain; otherwise it is stated in the header comment
+of the table or view. Tables in `marts` are named after the result they hold —
+`hypothesis_results`, `qir_attrition`.
 
 **Columns** are `snake_case`. Booleans read as predicates (`is_`, `has_`).
-Timestamps end in `_at`. Free-text fields carry a `_raw` suffix where a
-normalised counterpart exists alongside them.
+Timestamps end in `_at`. A free-text field that is parsed into normalised
+columns is kept beside them under its own name (trimmed and lower-cased); an
+untouched `_raw` copy is added only when it is needed downstream.
 
 **Source-of-truth values are retained.** Where a value is derived for
 convenience — a numeric midpoint from a band, for instance — the original is kept
@@ -139,7 +156,12 @@ what the analysis is accountable to.
 These rules apply to every source, not only to the survey. They matter more, not
 less, as GA4 and email data enter the warehouse.
 
-- **Raw records are never committed.** `data/raw/` is git-ignored.
+- **Raw records with personal data are never committed.** `data/raw/` holds only
+  public, non-personal files, currently the competitor benchmark CSV (product
+  pages and public reviews), committed so the benchmark can be reproduced from
+  source. Survey, GA4 and email exports are kept outside the repository and are
+  never saved to `data/raw/`. `.gitignore` enforces this: everything in
+  `data/raw/` is ignored except `competitor_benchmark_*.csv`.
 - **Only aggregated outputs are published**, and only where they contain no
   personal data.
 - **Personal data is isolated.** Email addresses and any other identifiers are
