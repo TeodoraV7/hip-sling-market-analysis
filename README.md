@@ -52,3 +52,6 @@ The end goal is twofold:
 | [`docs/06_analysis_plan.md`](docs/06_analysis_plan.md) | Pre-registered analysis plan |
 | [`notebooks/survey_transformation.ipynb`](notebooks/survey_transformation.ipynb) | Cleans raw survey data: `staging` → `intermediate` |
 | [`notebooks/survey_analysis.ipynb`](notebooks/survey_analysis.ipynb) | Hypothesis tests and QIR: `intermediate` → `marts` |
+| [`sql/intermediate/`](sql/intermediate) | BigQuery views: `staging` → `intermediate` (competitor benchmark) |
+| [`sql/marts/`](sql/marts) | BigQuery views: `intermediate` → `marts` (competitor product mart, survey respondent profile) |
+| [`data/raw/`](data/raw) | Public raw data only (competitor benchmark CSV); survey data is never committed |

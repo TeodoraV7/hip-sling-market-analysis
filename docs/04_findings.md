@@ -31,6 +31,17 @@ evaluated against their pre-registered thresholds.
 
 ---
 
+## Deviations
+
+Departures from [`06_analysis_plan.md`](06_analysis_plan.md), recorded as
+required by its section 12.
+
+| Date | Departure | Reason |
+|---|---|---|
+| 2026-11-25 | Added `marts.survey_respondent_profile`, a respondent-level view with no direct identifiers, for the sample-description dashboard. Looker computes counts and averages from it. Section 11 planned aggregated marts only and no calculation in the dashboard. | Describing the sample (demographics, habits, needs) needs flexible slicing in the dashboard. Hypothesis results and the QIR still come from the notebook marts. |
+
+---
+
 ## Reporting commitments
 
 - Every proportion carries a confidence interval.
