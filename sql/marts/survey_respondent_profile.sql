@@ -11,9 +11,9 @@
 --   - multi-select dummies (family_activities_*, transport_type_*,
 --     switch_reasons_*) passed through as 0/1: SUM in Looker = respondents
 --   - *_order columns to sort bands in charts (Looker sorts text A-Z)
---   - the segment flags survey_analysis.ipynb uses (target child age, carrier
---     user, hip sling user, willing to try, opt-in), so dashboard filters give
---     the same numbers as the analysis marts
+--   - the segment flags survey_analysis.ipynb uses (carrier user, hip sling
+--     user, willing to try, opt-in), so dashboard filters give the same
+--     numbers as the analysis marts
 --   - satisfaction is meaningful only for carrier users: filter on
 --     is_carrier_user when charting satisfaction_*
 --   - carrier_brand: brand extracted from the free-text answer (Q14) by full
@@ -116,12 +116,8 @@ SELECT
     WHEN 'Every day' THEN 1 WHEN 'A few times a week' THEN 2
     WHEN 'A few times a month' THEN 3 WHEN 'Only for special events' THEN 4
     WHEN 'Never' THEN 5 END                                       AS carrier_usage_frequency_order,
-  CASE wtp_band
-    WHEN '<50' THEN 1 WHEN '50-80' THEN 2 WHEN '80-110' THEN 3
-    WHEN '110-140' THEN 4 END                                     AS wtp_band_order,
 
   -- ---------- segment flags (as in survey_analysis.ipynb) ----------
-  COALESCE(child_age_years BETWEEN 1 AND 4, FALSE)                AS is_target_child_age,
   COALESCE(uses_carrier_current IN ('Yes', 'Sometimes'), FALSE)   AS is_carrier_user,
   COALESCE(uses_hip_sling_current IN ('Yes', 'Sometimes'), FALSE) AS is_hip_sling_user,
   IF(COALESCE(uses_hip_sling_current IN ('Yes', 'Sometimes'), FALSE),
