@@ -84,6 +84,8 @@ typed AS (
     -- ---------- carrier brand from free text (Q14) ----------
     -- direct competitors first, so "Ergobaby and Tula" -> Ergobaby
     CASE
+      -- Q14 was required: non-users typed "no carrier", "do not use", etc.
+      WHEN uses_carrier_current NOT IN ('Yes', 'Sometimes')     THEN NULL
       WHEN REGEXP_CONTAINS(brand_text, r'ergo\s*baby|\bergo\b')   THEN 'Ergobaby'
       WHEN REGEXP_CONTAINS(brand_text, r'wild\s*ride|first\s*ride') THEN 'Wildride'
       WHEN REGEXP_CONTAINS(brand_text, r'\bmabe\b')               THEN 'Mabe'
