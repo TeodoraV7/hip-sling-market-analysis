@@ -149,7 +149,8 @@ SELECT
   COALESCE(child_age_years BETWEEN 1 AND 4, FALSE)                AS is_target_child_age,
   COALESCE(uses_carrier_current IN ('Yes', 'Sometimes'), FALSE)   AS is_carrier_user,
   COALESCE(uses_hip_sling_current IN ('Yes', 'Sometimes'), FALSE) AS is_hip_sling_user,
-  COALESCE(would_try_hip_sling = 'Yes', FALSE)                    AS is_willing_to_try,
+  IF(COALESCE(uses_hip_sling_current IN ('Yes', 'Sometimes'), FALSE),
+     NULL, COALESCE(would_try_hip_sling = 'Yes', FALSE))            AS is_willing_to_try,
   COALESCE(interested_in_launch = 'Yes', FALSE)                   AS is_opted_in
 FROM typed
 ;
