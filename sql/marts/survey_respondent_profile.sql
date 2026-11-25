@@ -1,7 +1,8 @@
 -- =============================================================================
 -- survey_respondent_profile
 -- Source : nomad-503212.intermediate.int_clean_survey_responses
--- Grain  : 1 row = 1 respondent (duplicate submissions removed)
+-- Grain  : 1 row = 1 respondent (intermediate has no duplicate submissions;
+--          checked on the final survey refresh)
 -- PII    : none. Email never reaches intermediate. The free-text carrier
 --          brand/model is not exposed; only the extracted brand is.
 --
@@ -15,40 +16,18 @@
 --     the same numbers as the analysis marts
 --   - satisfaction is meaningful only for carrier users: filter on
 --     is_carrier_user when charting satisfaction_*
---   - carrier_brand: brand extracted from the free-text answer (Q14) by
---     keyword; unrecognised text -> 'Other', no answer / "none" -> NULL
+--   - carrier_brand: brand extracted from the free-text answer (Q14) by full
+--     brand name. Carrier users: the brand found, else 'Other'.
+--     Non-users -> NULL.
 -- =============================================================================
 
 CREATE OR REPLACE VIEW `nomad-503212.marts.survey_respondent_profile` AS
 
-WITH fingerprinted AS (
-  SELECT
-    t.*,
-    -- every answer except submission metadata
-    TO_JSON_STRING((
-      SELECT AS STRUCT * EXCEPT (timestamp, respondent_id, updated_at)
-      FROM UNNEST([t])
-    ))                                                            AS answer_fingerprint
-  FROM `nomad-503212.intermediate.int_clean_survey_responses` AS t
-),
-
-deduped AS (
-  -- Identical answers on every question count as one submission; the earliest
-  -- is kept (same rule as survey_analysis.ipynb).
-  SELECT * EXCEPT (answer_fingerprint)
-  FROM fingerprinted
-  WHERE TRUE
-  QUALIFY ROW_NUMBER() OVER (
-    PARTITION BY answer_fingerprint
-    ORDER BY timestamp, respondent_id
-  ) = 1
-),
-
-with_brand_text AS (
+WITH with_brand_text AS (
   SELECT
     *,
     LOWER(NULLIF(TRIM(CAST(carrier_brand_model AS STRING)), ''))   AS brand_text
-  FROM deduped
+  FROM `nomad-503212.intermediate.int_clean_survey_responses`
 ),
 
 typed AS (
@@ -85,12 +64,12 @@ typed AS (
     -- direct competitors first, so "Ergobaby and Tula" -> Ergobaby
     CASE
       -- Q14 was required: non-users typed "no carrier", "do not use", etc.
-      WHEN uses_carrier_current NOT IN ('Yes', 'Sometimes')     THEN NULL
-      WHEN REGEXP_CONTAINS(brand_text, r'ergo\s*baby|\bergo\b')   THEN 'Ergobaby'
+      WHEN NOT COALESCE(uses_carrier_current IN ('Yes', 'Sometimes'), FALSE) THEN NULL
+      WHEN REGEXP_CONTAINS(brand_text, r'ergo\s*baby')            THEN 'Ergobaby'
       WHEN REGEXP_CONTAINS(brand_text, r'wild\s*ride|first\s*ride') THEN 'Wildride'
       WHEN REGEXP_CONTAINS(brand_text, r'\bmabe\b')               THEN 'Mabe'
       WHEN REGEXP_CONTAINS(brand_text, r'tush\s*baby')            THEN 'Tushbaby'
-      WHEN REGEXP_CONTAINS(brand_text, r'bj(o|ö|ø)rn')            THEN 'BabyBjorn'
+      WHEN REGEXP_CONTAINS(brand_text, r'baby\s*bj(o|ö|ø)rn')     THEN 'BabyBjorn'
       WHEN REGEXP_CONTAINS(brand_text, r'\bboba\b')               THEN 'Boba'
       WHEN REGEXP_CONTAINS(brand_text, r'\btula\b')               THEN 'Tula'
       WHEN REGEXP_CONTAINS(brand_text, r'manduca')                THEN 'Manduca'
@@ -107,16 +86,12 @@ typed AS (
       WHEN REGEXP_CONTAINS(brand_text, r'buzzidil')               THEN 'Buzzidil'
       WHEN REGEXP_CONTAINS(brand_text, r'didymos')                THEN 'Didymos'
       WHEN REGEXP_CONTAINS(brand_text, r'\bmoby\b')               THEN 'Moby'
-      -- no answer, "none", "-", "don't use/know" -> NULL
-      WHEN brand_text IS NULL
-        OR REGEXP_CONTAINS(brand_text,
-             r'^(no|none|nothing|n/?a|-+|\.+|/|ne|nema|ninguna?o?|no uso|i don.?t.*|don.?t.*)\.?$')
-        THEN NULL
+      -- carrier user, no recognised brand (incl. "not sure", "-")
       ELSE 'Other'
     END                                                           AS carrier_brand,
     -- mentions any of the four benchmarked competitors
     COALESCE(REGEXP_CONTAINS(brand_text,
-      r'ergo\s*baby|\bergo\b|wild\s*ride|first\s*ride|\bmabe\b|tush\s*baby'), FALSE)
+      r'ergo\s*baby|wild\s*ride|first\s*ride|\bmabe\b|tush\s*baby'), FALSE)
                                                                   AS is_direct_competitor_user
   FROM with_brand_text
 )
