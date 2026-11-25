@@ -72,7 +72,7 @@ re-collection.
 
 | Source | `staging` | `intermediate` | `marts` |
 |---|---|---|---|
-| Survey | `stg_survey_responses` | `int_clean_survey_responses` ([notebook](../notebooks/survey_transformation.ipynb)) | result tables below ([notebook](../notebooks/survey_analysis.ipynb)) |
+| Survey | `stg_survey_responses` | `int_clean_survey_responses` ([notebook](../notebooks/survey_transformation.ipynb)) | result tables below ([notebook](../notebooks/survey_analysis.ipynb)); `survey_respondent_profile` view ([SQL](../sql/marts/survey_respondent_profile.sql)) |
 | Competitor benchmark | `stg_benchmark_competitors` (from `data/raw/competitor_benchmark_2026-11-18.csv`) | `int_competitor_benchmark` view ([SQL](../sql/intermediate/int_competitor_benchmark.sql)) | `competitor_product_benchmark` view ([SQL](../sql/marts/competitor_product_benchmark.sql)) |
 
 Looker Studio connects to `marts` only. Dashboards do not query `staging` or
@@ -84,7 +84,8 @@ to be published.
 `marts` holds the results of the analysis, one table per result, so that each
 reporting surface reads a finished number and the dashboard performs no
 calculation of its own. Tables are rebuilt in full on every run of the analysis
-notebook (`WRITE_TRUNCATE`); they are never edited by hand.
+notebook (`WRITE_TRUNCATE`); they are never edited by hand. The views in
+`sql/marts/` are re-created from their SQL files.
 
 | Table | Contents |
 |---|---|
@@ -95,6 +96,8 @@ notebook (`WRITE_TRUNCATE`); they are never edited by hand.
 | `qir_attrition` | Respondents remaining after each of the four QIR conditions |
 | `qir_deflator_sensitivity` | QIR at each deflator factor |
 | `country_comparison` | Spain vs. Serbia on the secondary comparisons, with an interval around each difference |
+| `competitor_product_benchmark` (view) | One row per competitor product: EUR list price, child spec, pooled reviews and rating, shoulder/strap complaint flag, best accessory |
+| `survey_respondent_profile` (view) | One row per respondent for the sample-description dashboard: demographics, habits, needs, carrier brand, segment flags and band sort keys. No direct identifiers: no email, no free text |
 
 Definitions and decision rules behind each table are in
 [`06_analysis_plan.md`](06_analysis_plan.md).
