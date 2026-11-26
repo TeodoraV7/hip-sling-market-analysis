@@ -72,7 +72,7 @@ re-collection.
 
 | Source | `staging` | `intermediate` | `marts` |
 |---|---|---|---|
-| Survey | `stg_survey_responses` | `int_clean_survey_responses` ([notebook](../notebooks/survey_transformation.ipynb)) | result tables below ([notebook](../notebooks/survey_analysis.ipynb)); `survey_respondent_profile` view ([SQL](../sql/marts/survey_respondent_profile.sql)) |
+| Survey | `stg_survey_responses` | `int_clean_survey_responses` ([notebook](../notebooks/survey_transformation.ipynb)) | result tables below ([notebook](../notebooks/survey_analysis.ipynb)); `survey_respondent_profile` view ([SQL](../sql/marts/survey_respondent_profile.sql)); `target_customers` view ([SQL](../sql/marts/target_customers.sql)) and `importance_satisfaction` view ([SQL](../sql/marts/importance_satisfaction.sql)), both built on `survey_respondent_profile` |
 | Competitor benchmark | `stg_benchmark_competitors` (from `data/raw/competitor_benchmark_2026-11-18.csv`) | `int_competitor_benchmark` view ([SQL](../sql/intermediate/int_competitor_benchmark.sql)) | `competitor_product_benchmark` view ([SQL](../sql/marts/competitor_product_benchmark.sql)) |
 
 Looker Studio connects to `marts` only. Dashboards do not query `staging` or
@@ -98,6 +98,8 @@ notebook (`WRITE_TRUNCATE`); they are never edited by hand. The views in
 | `country_comparison` | Spain vs. Serbia on the secondary comparisons, with an interval around each difference |
 | `competitor_product_benchmark` (view) | One row per competitor product: EUR list price, child spec, pooled reviews and rating, shoulder/strap complaint flag, best accessory |
 | `survey_respondent_profile` (view) | One row per respondent for the sample-description dashboard: demographics, habits, needs, carrier brand, segment flags and band sort keys. No direct identifiers: no email, no free text |
+| `target_customers` (view) | One row per respondent segment (activities, transport, area, household, carrier use, parent age) among respondents with a child aged 1–4: `n`, opt-in rate and share with WTP of €50 or more. Segments overlap; segments under 10 respondents are dropped |
+| `importance_satisfaction` (view) | One row per carrier attribute (comfort for parent and child, ease of use, compactness, material) among carrier users with a child aged 1–4: mean importance, mean satisfaction and the number of answers behind each |
 
 Definitions and decision rules behind each table are in
 [`06_analysis_plan.md`](06_analysis_plan.md).
@@ -128,6 +130,12 @@ benchmark, is transformed with BigQuery views instead of notebooks. Each view is
 one file named after the view, in `sql/intermediate/` or `sql/marts/`, and the
 file is the source of truth: the view is re-created from it, never edited in the
 console.
+
+The same applies to marts that exist only to feed a dashboard page, such as
+`target_customers` and `importance_satisfaction`. They read from
+`survey_respondent_profile`, so the segment flags are defined once, and Looker
+connects to the view itself, not to a Custom SQL query: the logic is versioned
+here and the dashboard stays free of calculation.
 
 ---
 
