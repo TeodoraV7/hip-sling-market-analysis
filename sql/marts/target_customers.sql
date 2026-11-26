@@ -24,6 +24,12 @@
 --      as below 50. This is not the QIR qualifying band (80-110 or higher).
 --   4. Segments with fewer than 10 respondents are dropped, the same floor as
 --      MIN_COUNTRY_N in survey_analysis.ipynb.
+--   5. is_near_centre marks segments within 0.05 of the centre of the scatter
+--      plot (opt-in rate 0.64, WTP50 rate 0.58) on both axes. The dashboard
+--      hides them with the filter is_near_centre = FALSE on the scatter plot
+--      only. All rows stay in the view, so tables and other charts still show
+--      every segment. The centre is fixed, not recomputed: move it here if the
+--      survey is ever refreshed.
 -- =============================================================================
 
 CREATE OR REPLACE VIEW `nomad-503212.marts.target_customers` AS
@@ -90,14 +96,22 @@ segmented AS (
     ('Parent 35-40',         respondent_age = '35-40')
   ])
   WHERE in_segment
+),
+
+by_segment AS (
+  SELECT
+    segment,
+    COUNT(*)                                                      AS n,
+    AVG(opted_in)                                                 AS opt_in_rate,
+    AVG(wtp_50_plus)                                              AS wtp50_rate
+  FROM segmented
+  GROUP BY segment
+  HAVING COUNT(*) >= 10
 )
 
 SELECT
-  segment,
-  COUNT(*)                                                        AS n,
-  AVG(opted_in)                                                   AS opt_in_rate,
-  AVG(wtp_50_plus)                                                AS wtp50_rate
-FROM segmented
-GROUP BY segment
-HAVING COUNT(*) >= 10
+  *,
+  ABS(opt_in_rate - 0.64) < 0.05
+    AND ABS(wtp50_rate - 0.58) < 0.05                             AS is_near_centre
+FROM by_segment
 ;
