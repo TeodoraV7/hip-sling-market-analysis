@@ -12,9 +12,9 @@
 -- Logic
 --   1. Base = respondents with a child aged 1-4, the qualified population of
 --      06_analysis_plan.md section 2. The base is applied here, so the
---      dashboard does not repeat it. The segment 'All respondents' is this
---      whole base (not every submission): the benchmark each segment is read
---      against.
+--      dashboard does not repeat it. The segment 'Qualified (child 1-4)' is
+--      this whole base: the benchmark each segment is read against. It is
+--      not 'All respondents' in the sense of the plan (every submission).
 --   2. Segments are defined once, in the UNNEST list below, and overlap: a
 --      respondent counts in every segment they belong to, so `n` does not
 --      sum to the base. To add a segment, add one line to the list.
@@ -69,7 +69,7 @@ WITH base AS (
 segmented AS (
   SELECT segment, opted_in, wtp_50_plus
   FROM base, UNNEST([
-    STRUCT('All respondents' AS segment, TRUE AS in_segment),
+    STRUCT('Qualified (child 1-4)' AS segment, TRUE AS in_segment),
     -- family activities (multi-select dummies)
     ('Travel',               family_activities_travel = 1),
     ('Weekend trips',        family_activities_weekend_trips = 1),
