@@ -10,14 +10,21 @@
 --
 -- Logic
 --   1. Base = current carrier users (Yes or Sometimes) with a child aged 1-4.
---      Satisfaction was asked only of carrier users, so the base is the same
---      for both scores.
+--      Both grids were shown to every respondent, non-users included
+--      (03_survey_instrument.md section 4), and non-users did answer them.
+--      They are left out because satisfaction with a current carrier is only
+--      meaningful for those who use one, and both scores then come from the
+--      same people. Importance here therefore differs from
+--      h3_importance_ranking, which averages all qualified respondents.
 --   2. importance and satisfaction are means of the 1-5 grid answers (Q18,
 --      Q16) over respondents who answered the item.
 --   3. Four attributes pair items of the same name. 'Material' pairs
 --      importance_material_quality with satisfaction_panel_material: different
 --      survey items, paired as in the Custom SQL it replaces.
---   4. n is the size of the base, the same on every row.
+--   4. n is the size of the base, the same on every row. Checked on the final
+--      data: all 63 carrier users answered the items tested (comfort for the
+--      parent, compactness, material), so n is also the number of answers
+--      behind each mean.
 -- =============================================================================
 
 CREATE OR REPLACE VIEW `nomad-503212.marts.importance_satisfaction` AS

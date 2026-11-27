@@ -27,7 +27,13 @@
 --      (80-110 or higher).
 --   4. Segments with fewer than 10 respondents are dropped, the same floor as
 --      MIN_COUNTRY_N in survey_analysis.ipynb.
---   5. is_near_centre flags segments within 0.05 of the centre of the scatter
+--   5. Each rate has a 95% Wilson interval (_ci_low, _ci_high), the same
+--      interval as wilson_ci in survey_analysis.ipynb (z = 1.96). The opt-in
+--      interval uses `n`; the wtp50 interval uses the respondents who answered
+--      the WTP question. Segments are small and overlap, so read the interval,
+--      not the point, before calling two segments different. The intervals are
+--      for the table or tooltip: the scatter plot cannot draw error bars.
+--   6. is_near_centre flags segments within 0.05 of the centre of the scatter
 --      plot (opt-in rate 0.64, WTP50 rate 0.58) on both axes. It is a flag, not
 --      an exclusion: these segments are part of the analysis and stay in the
 --      view, so tables and other charts still show them. The dashboard filters
@@ -111,15 +117,40 @@ by_segment AS (
     segment,
     COUNT(*)                                                      AS n,
     AVG(opted_in)                                                 AS opt_in_rate,
+    COUNT(wtp_50_plus)                                            AS n_wtp,
     AVG(wtp_50_plus)                                              AS wtp50_rate
   FROM segmented
   GROUP BY segment
   HAVING COUNT(*) >= 10
+),
+
+-- Wilson 95% interval, z = 1.96: (centre -/+ half) / d, with
+--   d = 1 + z^2/n, centre = p + z^2/(2n), half = z * sqrt(p(1-p)/n + z^2/(4n^2))
+-- z^2 = 3.8416. SAFE_DIVIDE keeps a segment with no WTP answers at NULL.
+wilson AS (
+  SELECT
+    *,
+    1 + 3.8416 / n                                                AS opt_in_d,
+    opt_in_rate + 3.8416 / (2 * n)                                AS opt_in_centre,
+    1.96 * SQRT(opt_in_rate * (1 - opt_in_rate) / n
+                + 3.8416 / (4 * n * n))                           AS opt_in_half,
+    1 + SAFE_DIVIDE(3.8416, n_wtp)                                AS wtp50_d,
+    wtp50_rate + SAFE_DIVIDE(3.8416, 2 * n_wtp)                   AS wtp50_centre,
+    1.96 * SQRT(wtp50_rate * (1 - wtp50_rate) / n_wtp
+                + SAFE_DIVIDE(3.8416, 4 * n_wtp * n_wtp))         AS wtp50_half
+  FROM by_segment
 )
 
 SELECT
-  *,
+  segment,
+  n,
+  opt_in_rate,
+  (opt_in_centre - opt_in_half) / opt_in_d                        AS opt_in_ci_low,
+  (opt_in_centre + opt_in_half) / opt_in_d                        AS opt_in_ci_high,
+  wtp50_rate,
+  (wtp50_centre - wtp50_half) / wtp50_d                           AS wtp50_ci_low,
+  (wtp50_centre + wtp50_half) / wtp50_d                           AS wtp50_ci_high,
   ABS(opt_in_rate - 0.64) < 0.05
     AND ABS(wtp50_rate - 0.58) < 0.05                             AS is_near_centre
-FROM by_segment
+FROM wilson
 ;
