@@ -20,8 +20,11 @@
 --      sum to the base. To add a segment, add one line to the list.
 --   3. opt_in_rate = share who opted in to launch notification (is_opted_in).
 --      wtp50_rate  = share whose WTP band is 50 or more (50-80, 80-110,
---      110-140). Respondents without a band stay in the denominator and count
---      as below 50. This is not the QIR qualifying band (80-110 or higher).
+--      110-140), among respondents who answered the WTP question. A missing
+--      band stays NULL and is left out of this rate (no imputation, as in
+--      06_analysis_plan.md section 8), so `n` can be larger than the number of
+--      answers behind wtp50_rate. This is not the QIR qualifying band
+--      (80-110 or higher).
 --   4. Segments with fewer than 10 respondents are dropped, the same floor as
 --      MIN_COUNTRY_N in survey_analysis.ipynb.
 --   5. is_near_centre flags segments within 0.05 of the centre of the scatter
@@ -38,7 +41,11 @@ CREATE OR REPLACE VIEW `nomad-503212.marts.target_customers` AS
 WITH base AS (
   SELECT
     IF(is_opted_in, 1, 0)                                         AS opted_in,
-    IF(wtp_band IN ('50-80', '80-110', '110-140'), 1, 0)          AS wtp_50_plus,
+    CASE
+      WHEN wtp_band IS NULL THEN NULL
+      WHEN wtp_band IN ('50-80', '80-110', '110-140') THEN 1
+      ELSE 0
+    END                                                           AS wtp_50_plus,
     family_activities_travel,
     family_activities_weekend_trips,
     family_activities_caffes_restaurats,
