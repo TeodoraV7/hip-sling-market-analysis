@@ -39,6 +39,7 @@ required by its section 12.
 | Date | Departure | Reason |
 |---|---|---|
 | 2026-11-25 | Added `marts.survey_respondent_profile`, a respondent-level view with no direct identifiers, for the sample-description dashboard. Looker computes counts and averages from it. Section 11 planned aggregated marts only and no calculation in the dashboard. | Describing the sample (demographics, habits, needs) needs flexible slicing in the dashboard. Hypothesis results and the QIR still come from the notebook marts. |
+| 2026-11-26 | Added `marts.target_customers` (opt-in rate and share with WTP of €50 or more among those who answered, by respondent segment) and `marts.importance_satisfaction` (mean importance and satisfaction of carrier users). Both are aggregated in BigQuery SQL, not in the notebook, and replace Looker Custom SQL. The segment cuts are exploratory (section 9); each rate carries a 95% Wilson interval. Segments near the centre of the scatter plot are flagged (`is_near_centre`), not excluded: they stay in the mart and the analysis and are hidden only on the scatter plot, for a cleaner visual. | The target-customer and importance-satisfaction dashboard pages need descriptive cuts that the notebook marts do not provide. Versioned views in `sql/marts/` keep Looker reading `marts.*` only. Hypothesis results and the QIR still come from the notebook marts. |
 
 ---
 

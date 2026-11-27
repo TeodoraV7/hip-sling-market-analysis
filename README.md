@@ -53,5 +53,5 @@ The end goal is twofold:
 | [`notebooks/survey_transformation.ipynb`](notebooks/survey_transformation.ipynb) | Cleans raw survey data: `staging` → `intermediate` |
 | [`notebooks/survey_analysis.ipynb`](notebooks/survey_analysis.ipynb) | Hypothesis tests and QIR: `intermediate` → `marts` |
 | [`sql/intermediate/`](sql/intermediate) | BigQuery views: `staging` → `intermediate` (competitor benchmark) |
-| [`sql/marts/`](sql/marts) | BigQuery views: `intermediate` → `marts` (competitor product mart, survey respondent profile) |
+| [`sql/marts/`](sql/marts) | BigQuery views: `intermediate` → `marts` (competitor product mart, survey respondent profile, target customers, importance vs. satisfaction) |
 | [`data/raw/`](data/raw) | Public raw data only (competitor benchmark CSV); survey data is never committed |
