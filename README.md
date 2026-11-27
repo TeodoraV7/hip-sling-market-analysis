@@ -23,7 +23,7 @@ The end goal is twofold:
 | 1. Market Research & Survey Design | Design survey (demographics, lifestyle, carrier usage, prototype test) | 🟢 Done |
 | 2. [Survey Distribution](https://forms.gle/hWkt5NWEuNFu2fj97) | Distribute to target parent audience across the EU; collection closes 2026-11-15 | 🟢 Done |
 | 3. Data Collection & Pipeline | Set up BigQuery for storage, Google Colab (Python) for analysis | 🟢 Done |
-| 4. Data Analysis | Analyze demographics, usage patterns, and price sensitivity | 🟡 In Progress |
+| 4. [Data Analysis](https://datastudio.google.com/reporting/44272850-d075-4697-98b8-b6159b20fe7a) | Analyze demographics, usage patterns, and price sensitivity | 🟢 Done |
 | 5. Landing Page & Pre-Order Test | Build landing page, test real purchase intent via pre-orders | 🟡 In Progress |
 | 6. A/B Testing & Email Campaign | Test messaging/pricing variants, run email campaign | ⚪ Not Started |
 | 7. Financial & Regulatory Modeling | Model costs with/without EU certification (EN 13209-2:2015, OEKO-TEX 100, REACH, CE); evaluate EU-wide grant funding options | ⚪ Not Started |
