@@ -136,7 +136,7 @@ wilson AS (
                 + 3.8416 / (4 * n * n))                           AS opt_in_half,
     1 + SAFE_DIVIDE(3.8416, n_wtp)                                AS wtp50_d,
     wtp50_rate + SAFE_DIVIDE(3.8416, 2 * n_wtp)                   AS wtp50_centre,
-    1.96 * SQRT(wtp50_rate * (1 - wtp50_rate) / n_wtp
+    1.96 * SQRT(SAFE_DIVIDE(wtp50_rate * (1 - wtp50_rate), n_wtp)
                 + SAFE_DIVIDE(3.8416, 4 * n_wtp * n_wtp))         AS wtp50_half
   FROM by_segment
 )
@@ -150,7 +150,7 @@ SELECT
   wtp50_rate,
   (wtp50_centre - wtp50_half) / wtp50_d                           AS wtp50_ci_low,
   (wtp50_centre + wtp50_half) / wtp50_d                           AS wtp50_ci_high,
-  ABS(opt_in_rate - 0.64) < 0.05
-    AND ABS(wtp50_rate - 0.58) < 0.05                             AS is_near_centre
+  COALESCE(ABS(opt_in_rate - 0.64) < 0.05
+           AND ABS(wtp50_rate - 0.58) < 0.05, FALSE)              AS is_near_centre
 FROM wilson
 ;
