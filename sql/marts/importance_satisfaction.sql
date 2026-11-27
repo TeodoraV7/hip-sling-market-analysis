@@ -17,9 +17,7 @@
 --   3. Four attributes pair items of the same name. 'Material' pairs
 --      importance_material_quality with satisfaction_panel_material: different
 --      survey items, paired as in the Custom SQL it replaces.
---   4. n is the size of the base, the same on every row. n_importance and
---      n_satisfaction count the answers behind each mean; they differ from n
---      where an item was skipped or not asked.
+--   4. n is the size of the base, the same on every row.
 -- =============================================================================
 
 CREATE OR REPLACE VIEW `nomad-503212.marts.importance_satisfaction` AS
@@ -53,9 +51,7 @@ SELECT
   attribute,
   AVG(importance)                                                 AS importance,
   AVG(satisfaction)                                               AS satisfaction,
-  COUNT(*)                                                        AS n,
-  COUNT(importance)                                               AS n_importance,
-  COUNT(satisfaction)                                             AS n_satisfaction
+  COUNT(*)                                                        AS n
 FROM paired
 GROUP BY attribute
 ;
